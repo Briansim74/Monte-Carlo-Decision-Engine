@@ -126,7 +126,7 @@ int main(){
     Poker_Simulation poker_simulation;
 
     cout << "\n--------- POKER SIMULATION ---------\n\n";
-    cout << "Please enter [simulations, stack, num_players, my_player_id (0 == UTG), sb_amount] (or 0 to quit):";
+    cout << "Please enter simulations, stack, num_players, my_player_id (0 == UTG), sb_amount (or 0 to quit):";
     cin >> simulations;
 
     if(simulations == 0){
@@ -302,7 +302,11 @@ void Poker_Simulation::initialize_parameters(int num_players, double stack, int 
     game_state.player_states.resize(num_players); // Set number of players for array of player_states
     game_state.sb_amount = sb_amount;
 
-    cout << "\nInitializing parameters -> players: " << num_players << ", stack: " << fixed << setprecision(2) << stack << ", my_player_id: " << my_player_id << ", sb_amount: " << sb_amount << "\n\n";
+    cout << left << setw(15) << "\nInitializing parameters:\n\n";
+    cout << left << setw(15) << "stack: " << left << setw(15) << stack << "\n";
+    cout << left << setw(15) << "num_players: " << left << setw(15) << num_players << "\n";
+    cout << left << setw(15) << "my_player_id: " << left << setw(15) << my_player_id << "\n";
+    cout << left << setw(15) << "sb_amount: " << left << setw(15) << sb_amount << "\n\n";
 
     for(int i = 0; i < num_players; i++){
         game_state.player_states[i].id = i;
@@ -1802,7 +1806,7 @@ void Poker_Simulation::simulate_street(const string& street){
             // Fold
             if(action == "fold") player.folded = true;
             
-            // Call / Call / Bet / Raise
+            // Call / Bet / Raise
             else{
                 if(action == "bet" && bet == 0.00) action = "check";
                 else if(action == "raise" && bet == 0.00) action = "all-in";
@@ -2037,15 +2041,15 @@ void Poker_Simulation::run_simulations(int simulations, double stack, int num_pl
         }
         
         else if(broke_players.size() == 1){
-            cout << "\nPlayer " << broke_players[0] << " has run out of funds.\n";
+            cout << "\nPlayer " << broke_players[0] << ((broke_players[0] == game_state.my_player_id) ? " (YOU)" : "") << " has run out of funds.\n";
             cout << "\n--------- END OF SIMULATION ---------\n";
             return;
         }
         
         else{
             cout << "Players ";
-            for(int i = 0; i < broke_players.size() - 1; i++) cout << broke_players[i] << ", ";
-            cout << "\n" << broke_players[broke_players.size() - 1] << " have run out of funds.\n";
+            for(int i = 0; i < broke_players.size() - 1; i++) cout << broke_players[i] << ((broke_players[i] == game_state.my_player_id) ? " (YOU)" : "") << ", ";
+            cout << broke_players[broke_players.size() - 1] << ((broke_players[broke_players.size() - 1] == game_state.my_player_id) ? " (YOU)" : "") << " have run out of funds.\n";
             cout << "\n--------- END OF SIMULATION ---------\n";
             return;
         }
