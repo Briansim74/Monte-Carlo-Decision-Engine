@@ -1,15 +1,17 @@
 # Monte-Carlo-Decision-Engine
-A high-performance decision engine using Monte Carlo simulation for imperfect-information environments, applied to No-Limit Texas Hold’em (NLHE). The engine evaluates possible actions, simulates outcomes, and determines optimal strategies under uncertainty. Supports multi-agent gameplay, dynamic stack sizes, and stochastic policy evaluation, subject to capital constraints and risk of ruin dynamics.
+A high-performance decision engine using Monte Carlo simulation for imperfect-information environments, applied to No-Limit Texas Hold’em Poker (NLHE). The engine evaluates possible actions, simulates outcomes, and determines optimal strategies under uncertainty. Supports multi-agent gameplay, dynamic stack sizes, and stochastic policy evaluation, subject to capital constraints and risk of ruin dynamics.
 
 ## Project Overview
-This project implements a Monte Carlo–based decision engine for No-Limit Texas Hold’em. Players’ decisions are simulated across many random game continuations, allowing evaluation of actions in terms of expected value (EV) and risk. This setup mirrors real-world high-dimensional decision-making problems like quantitative trading.
+This project implements a Monte Carlo-based decision engine for No-Limit Texas Hold’em Poker. Players’ decisions are simulated across many random game continuations, allowing evaluation of actions in terms of expected value (EV) and risk. This setup mirrors real-world high-dimensional decision-making problems like quantitative trading.
 
 ## This repository includes:
 - A C++ Monte Carlo decision engine for high-speed simulations
 - A Python prototype for conceptual understanding and visualization
 - Example game states and simulations for testing multi-agent interactions
 
-## Features
+<br>
+
+### Features
 
 | Feature                      | Description                                                                             |
 | -----------------------------|-----------------------------------------------------------------------------------------|
@@ -22,163 +24,176 @@ This project implements a Monte Carlo–based decision engine for No-Limit Texas
 | Logging & Analysis           | Tracks decision outcomes and EV distributions for review and further analysis           |
 | C++ & Python                 | Fast C++ engine for performance, Python version for prototyping and visualization       |
 
+<br>
+
 ## Project Structure
 - poker.cpp (High-performance C++ Monte Carlo engine)
 - poker.exe (Compiled C++ Executable)
 - poker.ipynb (Python version for rapid prototyping and visualization)
 
+<br>
+
 ## No-Limit Texas Hold'em Monte Carlo Decision Engine Pipeline
-The engine simulates large-scale batches of No-Limit Texas Hold’em hands from initialization to termination, modeling a full decision pipeline under uncertainty. 
-By running repeated Monte Carlo simulations, it estimates action-level expected value (EV), hand equities, and strategic outcomes across diverse game states.
+The engine simulates large-scale batches of No-Limit Texas Hold’em hands from initialization to termination, modeling a full decision pipeline under uncertainty. By running repeated Monte Carlo simulations, it estimates action-level expected value (EV), hand equities, and strategic outcomes across diverse game states.
 
-Deal → Preflop → Flop → Turn → River → Showdown → New Game
+<br>
 
-1. Deal (Initialization)
+### Deal → Preflop → Flop → Turn → River → Showdown → New Game
+
+<br>
+
+### 1. Deal (Initialization)
 - Reset game state, player states and contributions
 - Assign positions (UTG → MP → CO → BTN → SB → BB)
 - Construct and shuffle a 52-card deck
 - Deal 2 hole cards to each player
 - Post blinds and initialize pot
 
-2. Preflop
 <br>
+
+
+### 2. Preflop
+
 Players act in positional order
 
-<br>
 Decisions based on:
 - Position-based hand ranges
 - Prior action (raises, calls)
 - Stack sizes, current bet size, pot state
 
-<br>
 Actions:
 - Fold / Call / Raise (with dynamic sizing)
 
-<br>
 Updates:
 - Pot size
 - Player stacks
 - Player contributions
 - Action history
 
-4. Flop
 <br>
+
+
+### 3. Flop
+
 Reveal 3 community cards
 
-<br>
 Initialize postflop betting round
 
-<br>
 Evaluate:
 - Hand strength evaluations for equity calculation (7card_fast, hand_strength, hand_strength_combo, 7card)
 - Monte Carlo equity (multiway)
 - Board texture (flush draw, paired board)
 
-<br>
 Strategy:
 - Strong hands → bet / raise
 - Medium hands → mixed strategy
 - Weak hands → fold or occasional bluff
 
-6. Turn
 <br>
+
+
+### 4. Turn
+
 Reveal 4th community card
 
-<br>
 Recompute:
 - Equity
 - Draw potential (flush / straight)
 
-<br>
 Strategy adjustments:
 - Reduced bluff frequency
 - Increased aggression for strong hands
 - Semi-bluffing with draws
 
-8. River
 <br>
+
+### 5. River
+
 Reveal final community card
 
-<br>
 Compute final equity (no uncertainty remaining)
 
-<br>
 Strategy:
 - Strong hands → value bet / raise
 - Medium hands → call/check
 - Weak hands → fold
 - Bluffing is minimal
 
-10. Showdown
 <br>
-Triggered if multiple players remain
-<br>
+
+### 6. Showdown
+
+Triggered if multiple players remain:
 - Evaluate best 5-card hands from 7 cards
 - Compare scores using hand_strength_combo
 - Determine winner(s)
 - Split pot in case of ties
 
-11. End Game (Early Termination)
 <br>
+
+### 7. End Game (Early Termination)
+
 Triggered when only one player remains
 
-<br>
 Remaining player:
 - Wins entire pot
 - Skips remaining streets and showdown
 
-12. Reset / New Game
 <br>
+
+### 8. New Game
+
 Clear game state:
 - Pot
 - Board cards
 - Player contributions
 - Prepare for next simulation
 
-<br>
 Players continue with their current remaining stack for the next game.
+
+<br>
 
 ## Simulation Loop Integration
 
 The full pipeline is executed repeatedly during Monte Carlo simulations:
 
-```cpp
-for each simulation:
-    initialize game state
-    run full pipeline (deal → termination)
-    record outcome (win / loss / tie)
-```
+**For each simulation:**
+- initialize game state
+- run full pipeline (deal → termination)
+- record outcome (win / loss / tie)
 
-This enables:<br>
-Large-scale probabilistic evaluation<br>
-Stable expected value (EV) estimation<br>
-Efficient exploration of uncertain outcomes<br>
+**This enables:**
+- Large-scale probabilistic evaluation<br>
+- Stable expected value (EV) estimation<br>
+- Efficient exploration of uncertain outcomes<br>
+
+<br>
 
 ## Multi-Agent Strategy
 Each player is modeled as an independent agent operating in an imperfect-information environment,<br>
 with access only to private hole cards and shared public state.
 
-<br>
-Policies can be:
+**Policies can be:**
 - Uniform random
 - Predefined strategies
 - Learned / historical tendencies
 
-<br>
-Stack & Pot Awareness
+**Stack & Pot Awareness:**
 - Raises and bets are evaluated relative to the current stack sizes
 - EV calculations incorporate potential future stack fluctuations
 - Fold, call, and raise options are dynamically adjusted depending on the situation
 
-## Bankruptcy & Risk of Ruin Modeling
-The engine incorporates explicit capital constraints by tracking stack evolution across simulations.<br>
-Once any players reaches zero capital, the entire simulation ends, introducing a natural stopping condition and enabling analysis of risk of ruin.
-
 <br>
+
+## Bankruptcy & Risk of Ruin Modeling
+The engine incorporates explicit capital constraints by tracking stack evolution across simulations. Once any players reaches zero capital, the entire simulation ends, introducing a natural stopping condition and enabling analysis of risk of ruin.
+
 - Enforces budget constraints on all actions
 - Models all-in transitions as boundary conditions
 - Enables evaluation of EV vs. drawdown risk
 - Supports large-scale simulation of capital survival probabilities
+
+<br>
 
 ## Key System Features
 
@@ -191,8 +206,9 @@ Once any players reaches zero capital, the entire simulation ends, introducing a
 | Scalable Monte Carlo Loop    | Thousands of independent simulations             |
 | Bankruptcy Handling          | Handling risk management / capital constraints   |
 
+<br>
 
-### Game States and Player States
+## Game States and Player States
 The engine maintains an overall game state as well as individual player states, structured as:
 
 ```cpp
@@ -228,12 +244,14 @@ struct Game_State {
 };
 ```
 
+<br>
+
 ## Preflop Decision Logic
 
-Preflop actions are determined using position-based hand ranges, action history, and stochastic weighting.<br>
-Each hand is assigned a probability weight depending on position (early, middle, late), which is then dynamically adjusted based on prior aggression.
+Preflop actions are determined using position-based hand ranges, action history, and stochastic weighting. Each hand is assigned a probability weight depending on position (early, middle, late), which is then dynamically adjusted based on prior aggression.
 
 <br>
+
 When a decision is evaluated, the engine:
 - Maps the player’s seating position to a predefined hand range (UTG → early / MP → middle / BTN → late)
 - Retrieves the base weight for the specific hand (e.g. AKs, TT)
@@ -242,22 +260,27 @@ When a decision is evaluated, the engine:
 - Determines whether to fold, call, or raise based on the adjusted weight
 
 <br>
-Key Mechanics<br>
-Position-Based Ranges<br>
+
+**Position-Based Ranges**<br>
+
 Different hand strengths are played depending on table position:
 - Early → tight range
 - Middle → balanced range
 - Late → wider range
 
 <br>
-Dynamic Weight Adjustment<br>
+
+**Dynamic Weight Adjustment**<br>
+
 Hand strength is penalized as aggression increases:
 - No raises → full range used
 - 1 raise → medium / weak hands reduced
 - Multiple raises → only strong hands continue
 
 <br>
-Raise Sizing Logic<br>
+
+**Raise Sizing Logic** <br>
+
 Raise amounts are determined relative to:
 - Hand strength
 - Current pot size
@@ -266,15 +289,21 @@ Raise amounts are determined relative to:
 - Stochastic action selection
 
 <br>
+
+**Stochastic Weighting** <br>
+
 Randomization is applied to:
 - Prevent deterministic play
 - Simulate mixed strategies
 
+<br>
+
 ## Postflop Decision Logic
-Postflop decisions (Flop, Turn, River) are driven by Monte Carlo equity estimation, board texture analysis, and game context.<br>
+Postflop decisions (Flop, Turn, River) are driven by Monte Carlo equity estimation, board texture analysis, and game context.
 The engine evaluates hand strength probabilistically rather than relying on static heuristics.
 
 <br>
+
 When a postflop decision is evaluated, the engine:
 - Simulates random game outcomes using Monte Carlo rollouts
 - Computes equity against multiple opponents
@@ -282,83 +311,96 @@ When a postflop decision is evaluated, the engine:
 - Adjusts strategy based on street (flop, turn, river)
 - Selects an action using both equity thresholds and stochastic sampling
 
+<br>
 
 ## Hand Strength Evaluation
 The engine evaluates poker hands using multiple approaches, with a focus on performance and scalability for Monte Carlo simulations.
 
-**7-Card Fast Evaluator (evaluate_7card_fast)**
-The primary evaluation method is a custom bitmask-based 7-card evaluator, optimized for speed during large-scale simulations.
+### 7-Card Fast Evaluator
+The primary evaluation method is a custom bitmask-based 7-card evaluator (evaluate_7card_fast), optimized for speed during large-scale simulations. The evaluator encodes each card into an integer representation:
+- Rank (2–14)
+- Suit (0–3)
+- Prime number (for uniqueness)
 
-**The evaluator:**
-Encodes each card into an integer representation:
-Rank (2–14)
-Suit (0–3)
-Prime number (for uniqueness)
+It uses bitmasks for rank and suit tracking and frequency arrays for duplicate detection (pairs, trips, quads)
 
-**Uses:**
-Bitmasks for rank and suit tracking
-Frequency arrays for duplicate detection (pairs, trips, quads)
+<br>
 
-**Key Mechanics**
-Flush Detection
-Uses suit-specific bitmasks to count cards per suit:
-A flush is detected if ≥5 cards share the same suit
+**Flush Detection**<br>
+Uses suit-specific bitmasks to count cards per suit:<br>
+- A flush is detected if ≥5 cards share the same suit
 
-**Straight Detection**
-Uses a rank bitmask:
-Checks consecutive sequences using bitwise operations
-Handles edge cases like wheel straight (A-2-3-4-5)
+<br>
 
-**Hand Classification**
+**Straight Detection**<br>
+Uses a rank bitmask:<br>
+- Checks consecutive sequences using bitwise operations<br>
+- Handles edge cases like wheel straight (A-2-3-4-5)
+
+<br>
+
+**Hand Classification**<br>
 Determines hand type in descending order:
-Straight Flush
-Four of a Kind
-Full House
-Flush
-Straight
-Three of a Kind
-Two Pair
-One Pair
-High Card
-Score Encoding
+- Straight Flush
+- Four of a Kind
+- Full House
+- Flush
+- Straight
+- Three of a Kind
+- Two Pair
+- One Pair
+- High Card
 
-Each hand is converted into a single comparable integer:
-Combines hand rank and kicker values using a base-15 system
-Ensures fast comparison between hands without complex structures
+<br>
+
+**Score Encoding**<br>
+Each hand is converted into a single comparable integer:<br>
+- Combines hand rank and kicker values using a base-15 system<br>
+- Ensures fast comparison between hands without complex structures
 
 This approach avoids expensive combinatorics and enables efficient evaluation across thousands of simulations.
 
-**Alternative Evaluators**<br>
+<br>
+
+**Alternative Evaluators:**
 - evaluate_hand_strength (Simple fast evaluator but lacks kicker logic)
 - evaluate_hand_strength_combo (Detailed evaluator used during Showdown with details on individual hand combos)
 - evaluate_7card (Iterates over all 5-card combinations using evaluate_5card, more explicit but slower, used for validation)
 - evaluate_5card (Evaluates fixed 5-card handstrengths, used internally by evaluate_7card)
 
+<br>
+
 These implementations provide correctness benchmarks for the optimized evaluate_7card_fast evaluator.
 
+<br>
 
 ## Monte Carlo Equity Simulation
-The core of the engine is a Monte Carlo–based equity calculator (monte_carlo_equity_multiway) used for postflop decision-making.
+The core of the engine is a Monte Carlo-based equity calculator (monte_carlo_equity_multiway) used for postflop decision-making.
 
-For each simulation:
+**For each simulation:**
+- Deck Construction
+- Generate a full deck
 
-Deck Construction
-Generate a full deck
-Remove:
-Hero’s cards
-Known board cards
-Opponent Sampling
-Randomly assign hole cards to each opponent
-Ensures no card duplication
-Board Completion
-Deal remaining community cards up to 5 total
-Hand Evaluation
-Evaluate hero and opponent hands using evaluate_7card_fast
-Outcome Tracking
-Win → +1
-Tie → +0.5
-Loss → +0
-Equity Calculation
+**Remove:**
+- Hero’s cards
+- Known board cards
+
+**Opponent Sampling:**
+- Randomly assign hole cards to each opponent
+- Ensures no card duplication
+
+**Board Completion:**
+- Deal remaining community cards up to 5 total
+
+**Hand Evaluation:**
+- Evaluate hero and opponent hands using evaluate_7card_fast
+
+**Outcome Tracking:**
+- Win → +1
+- Tie → +0.5
+- Loss → +0
+
+**Equity Calculation**
 
 After all simulations:
 ```cpp
@@ -366,220 +408,214 @@ equity = (wins + 0.5 × ties) / total_simulations
 ```
 This represents the probability of winning against multiple opponents.
 
-Multi-Agent Considerations
-Supports multiple opponents simultaneously
-Evaluates outcomes against all opponent hands
-Requires hero to beat all opponents to win the pot
-Performance Considerations
-Uses:
-Efficient deck copying per simulation
-Fast evaluator (evaluate_7card_fast)
-Random shuffling via mt19937
-Typical simulation counts:
-1,000 → fast approximation
-10,000+ → stable equity estimates
-Why Monte Carlo?
+<br>
 
-Closed-form evaluation is infeasible due to:
+**Multi-Agent Considerations:**
+- Supports multiple opponents simultaneously
+- Evaluates outcomes against all opponent hands
+- Requires hero to beat all opponents to win the pot
+- Performance considerations
 
-Combinatorial explosion of possible hands
-Hidden information (opponent cards)
-Multiple players
-
-Monte Carlo simulation provides:
-
-Scalable approximation
-Flexibility for complex game states
-Realistic modeling of uncertainty
-
-
-## Board Texture Analysis
-Board texture significantly influences optimal strategy.<br>
-The engine analyzes the structure of community cards to adjust decision-making dynamically.
-
-Texture Features
-
-The engine evaluates:<br>
-Flush Draw Potential<br>
-Triggered when ≤2 suits are present on the board<br>
-Indicates high likelihood of flush completion<br><br>
-
-Paired Boards<br>
-Detected when duplicate ranks exist<br>
-Increases probability of full houses or trips
+**Uses:**
+- Efficient deck copying per simulation
+- Fast evaluator (evaluate_7card_fast)
+- Random shuffling via mt19937
+- Typical simulation counts:
+- 2,000 → fast approximation
+- 10,000+ → stable equity estimates
 
 <br>
-How It’s Used<br>
+
+**Why Monte Carlo?** <br>
+Closed-form evaluation is infeasible due to:
+- Combinatorial explosion of possible hands
+- Hidden information (opponent cards)
+- Multiple players
+
+**Monte Carlo simulation provides:**
+- Scalable approximation
+- Flexibility for complex game states
+- Realistic modeling of uncertainty
+
+<br>
+
+## Board Texture Analysis
+Board texture significantly influences optimal strategy. The engine analyzes the structure of community cards to adjust decision-making dynamically.
+
+**The engine evaluates:**
+- Flush Draw Potential
+- Triggered when ≤2 suits are present on the board
+- Indicates high likelihood of flush completion
+
+**Paired Boards:**
+- Detected when duplicate ranks exist
+- Increases probability of full houses or trips
+
+**How It’s Used**<br>
 Board texture directly impacts:
 - Bet sizing
 - Bluff frequency
 - Aggression levels
 
-<br>
-Examples:<br>
-Wet boards (draw-heavy) → Larger bets, more semi-bluffing<br>
-Dry boards (low connectivity) → More checking, lower bluff frequency<br>
-Paired boards → More cautious play, reduced bluffing
+**Examples:**
+- Wet boards (draw-heavy) → Larger bets, more semi-bluffing<br>
+- Dry boards (low connectivity) → More checking, lower bluff frequency<br>
+- Paired boards → More cautious play, reduced bluffing
 
+<br>
 
 ## Flop Strategy
 The flop introduces the first community cards and the highest uncertainty.
 
-The engine:
-Computes equity using multiway Monte Carlo simulation
+**The engine:**
+- Computes equity using multiway Monte Carlo simulation
 
-Detects board texture:
-Flush draw potential
-Paired boards
+**Detects board texture:**
+- Flush draw potential
+- Paired boards
 
-Applies action thresholds:
-Strong hands → aggressive betting / raising
-Medium hands → mixed strategy (check/call/bet)
-Weak hands → fold or occasional bluff
+**Applies action thresholds:**
+- Strong hands → aggressive betting / raising
+- Medium hands → mixed strategy (check / call / bet)
+- Weak hands → fold or occasional bluff
 
-Bluff frequency increases on:
-Draw-heavy boards
-Situations with no prior aggression
+**Bluff frequency increases on:**
+- Draw-heavy boards
+- Situations with no prior aggression
+
+<br>
 
 ## Turn Strategy
 The turn reduces uncertainty and increases the importance of draw evaluation.
 
-The engine:
-Recomputes equity with updated board
+**The engine:**
+- Recomputes equity with updated board
 
-Detects:
-Flush draws (4 cards of same suit)
-Straight draw potential
+**Detects:**
+- Flush draws (4 cards of same suit)
+- Straight draw potential
 
-Adjusts strategy:
-Strong hands → larger bets and raises
-Medium hands → more cautious (call/check)
-Weak hands → fold unless semi-bluffing
-Semi-Bluffing
+**Adjusts strategy:**
+- Strong hands → larger bets and raises
+- Medium hands → more cautious (call/check)
+- Weak hands → fold unless semi-bluffing
 
-Enabled when:
-Flush draw OR straight draw is present
-Allows:
-Calling with drawing hands
-Occasional raises to apply pressure
+**Semi-Bluffing:**
+- Enabled when flush draw OR straight draw is present
+
+**Allows:**
+- Calling with drawing hands
+- Occasional raises to apply pressure
 
 Bluff frequency is reduced compared to the flop.
+
+<br>
 
 ## River Strategy
 The river represents a fully realized game state with no future cards.
 
-The engine:
-Computes final equity (no uncertainty remaining)
-Eliminates most bluffing behavior
-Focuses on value extraction and risk control
+**The engine:**
+- Computes final equity (no uncertainty remaining)
+- Eliminates most bluffing behavior
+- Focuses on value extraction and risk control
 
-Action tendencies:
-Strong hands → value bet / raise
-Medium hands → mostly call or check
-Weak hands → fold
+**Action tendencies:**
+- Strong hands → value bet / raise
+- Medium hands → mostly call or check
+- Weak hands → fold
 
 Bluffing is minimal and only occurs in rare edge cases.
 
-## Key Mechanics Across Streets
-Monte Carlo Equity Estimation
-Simulates thousands of random outcomes to estimate win probability
-Multi-Agent Evaluation
-Equity is calculated against multiple opponents simultaneously
-Board Texture Awareness
-Strategy adapts to:
-Draw-heavy boards
-Paired boards
-Dry vs wet textures
-Dynamic Bet Sizing
-Bet sizes scale with:
-Pot size
-Board texture
-Hand strength
-Stochastic Decision Making
-Randomization ensures:
-Non-deterministic play
-Realistic mixed strategies
+<br>
 
-## Showdown Resolution
+## Key Mechanics Across Streets
+**Monte Carlo Equity Estimation**<br>
+Simulates thousands of random outcomes to estimate win probability
+
+**Multi-Agent Evaluation**<br>
+Equity is calculated against multiple opponents simultaneously
+
+**Board Texture Awareness**<br>
+Strategy adapts to:
+- Draw-heavy boards
+- Paired boards
+- Dry vs wet textures
+
+**Dynamic Bet Sizing**<br>
+Bet sizes scale with:
+- Pot size
+- Board texture
+- Hand strength
+- Stochastic Decision Making
+
+**Randomization ensures:**
+- Non-deterministic play
+- Realistic mixed strategies
+
+<br>
+
+## Showdown
 At the end of a hand, the engine determines the winner(s) by evaluating all remaining active players’ hands and distributing the pot accordingly.
 
-Showdown Process
+**When a showdown is triggered, the engine:**
+- Identifies all non-folded players
+- Combines each player’s hole cards and community board cards
+- Evaluates the best 5-card hand using the evaluate_hand_strength_combo evaluator
+- Compares all hands to determine the winner(s)
 
-When a showdown is triggered, the engine:
-Identifies all non-folded players
-Combines each player’s hole cards and community board cards
-Evaluates the best 5-card hand using the evaluate_hand_strength_combo evaluator
-Compares all hands to determine the winner(s)
+**Hand Comparison:**
+- Each player’s hand is converted into a numeric score using the evaluator
 
-Hand Comparison
-Each player’s hand is converted into a numeric score using the evaluator
+**Scores encode:**
+- Hand rank (e.g. flush, straight)
+- Kicker values (tie-breakers)
 
-Scores encode:
-Hand rank (e.g. flush, straight)
-Kicker values (tie-breakers)
+**The engine:**
+- Finds the maximum score across all players
+- Identifies all players with that score
 
-The engine:
-Finds the maximum score across all players
-Identifies all players with that score
-
-Tie Handling (Split Pots)
-If multiple players share the best hand, the pot is split evenly among winners
+**Tie Handling (Split Pots):**
+- If multiple players share the best hand, the pot is split evenly among winners
 
 Each winner receives:
 ```cpp
 pot / number_of_winners
 ```
 
-Remaining chips (if any due to rounding) can be:
-Distributed to earliest position (optional), or
-Ignored depending on implementation
+<br>
 
-Pot Distribution
+**Remaining chips (if any due to rounding) can be:**
+- Distributed to earliest position (optional), or
+- Ignored depending on implementation
 
+<br>
+
+**Pot Distribution** <br>
 For each winning player:
-Add winnings to their stack
-Update final stack values
+- Add winnings to their stack
+- Update final stack values
 
-For losing players:
-Their contributions remain in the pot
+**For losing players:**
+- Their contributions remain in the pot
 
-Example
-Board: Ah Kh Qh Jh 2c
+<br>
 
-Player 1: Th 9h → Straight Flush  
+**Example Board:**  Ah Kh Qh Jh 2c <br>
+
+Player 1: Th 9h → Straight Flush (Wins entire pot) <br>  
 Player 2: Ac Ad → Three of a Kind  
 
-Result:
-Player 1 wins entire pot
-
-Multi-Agent Considerations
-Supports multiway pots (3+ players)
-Requires the winning hand to beat all opponents
-Integrates seamlessly with Monte Carlo simulations:
-Each simulation ends in a showdown evaluation
-Integration with Simulation
-
-Showdown resolution is used in:
-
-Full hand simulations (simulate_showdown)
-Monte Carlo rollouts for equity calculation
-
-Each simulation:
-Runs to completion
-Resolves a showdown
-Returns the outcome (win / loss / tie)
+<br>
 
 ## Getting Started
 1. Compile the C++ Engine
 g++ -std=c++17 -O2 -o engine poker.cpp
 
-2. Run the Simulation
+2. Run the simulation on shell: ./poker.exe
 
-./poker.exe
+3. You’ll be prompted: Please enter simulations, stack, num_players, my_player_id, sb_amount (or 0 to quit):
 
-You’ll be prompted:
-
-Please enter simulations, stack, num_players, my_player_id, sb_amount (or 0 to quit):
+<br>
 
 | Parameter         | Description                                                                      | Example  |
 | ------------------|----------------------------------------------------------------------------------|----------|
@@ -590,27 +626,25 @@ Please enter simulations, stack, num_players, my_player_id, sb_amount (or 0 to q
 | sb_amount         | Small blind amount                                                               | 10       |
 | quit              | End Simulation                                                                   | 0        |
 
+<br>
 
 ## Python Version (For Prototyping)
 The Python version (poker.py) provides a simplified version of the Monte Carlo decision engine logic. Simple for visualization and concept validation but not optimized for speed.<br>
 
-The Python version allows:
-- Rapid experimentation with smaller simulation counts
-- Visualization of EV distributions
-- Understanding multi-agent dynamics
-- Simple testing and debugging of hand strength evaluation methods
+<br>
 
-## Features
+| Features                                                          |
+| ------------------------------------------------------------------|
 | Rapid experimentation with smaller simulation counts              |
 | Visualization of EV distributions                                 |
 | Understanding multi-agent dynamics                                |
 | Simple testing and debugging of hand strength evaluation methods  |
 
+<br>
 
 ## Example Outputs
 Here is how the engine behaves when initializing a session:
 
-### C++
 ### C++ (Initializing Parameters)
 <img width="724" height="149" alt="initialize_parameters" src="https://github.com/user-attachments/assets/2fa6d3bd-fd47-4c58-9c00-1e6f5fd6ea32" />
 
