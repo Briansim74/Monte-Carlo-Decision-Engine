@@ -318,8 +318,8 @@ The engine evaluates poker hands using multiple approaches, with a focus on perf
 
 ### 7-Card Fast Evaluator
 The primary evaluation method is a custom bitmask-based 7-card evaluator (evaluate_7card_fast), optimized for speed during large-scale simulations. The evaluator encodes each card into an integer representation:
-- Rank (2–14)
-- Suit (0–3)
+- Rank (2-14)
+- Suit (0-3)
 - Prime number (for uniqueness)
 
 It uses bitmasks for rank and suit tracking and frequency arrays for duplicate detection (pairs, trips, quads)
