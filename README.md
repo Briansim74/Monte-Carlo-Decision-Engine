@@ -1,3 +1,300 @@
+# Monte Carlo Decision Engine (Imperfect Information Systems)
+
+A high-performance C++ Monte Carlo decision engine for sequential decision-making under uncertainty. The system evaluates optimal actions by simulating large-scale stochastic outcomes in imperfect-information environments.
+
+The primary implementation applies to No-Limit Texas Hold’em Poker, used as a structured testbed for modeling:
+- Probabilistic decision-making under uncertainty
+- Multi-agent interaction in partially observable systems
+- Risk-adjusted expected value maximization
+- Sequential decision processes with state evolution
+
+The framework is designed to generalize to **market-like environments where outcomes depend on latent information, opponent behavior, and stochastic state transitions**, closely resembling problems in quantitative trading and execution.
+
+## Core Idea
+At each decision point, the engine evaluates possible actions by:
+1. Sampling future state trajectories via Monte Carlo simulation
+2. Modeling opponent strategies as stochastic policies
+3. Propagating uncertainty through sequential game states
+4. Estimating **action-level expected value (EV) distributions**
+5. Selecting actions via risk-adjusted decision rules
+
+</br>
+
+This mirrors trading problems such as:
+- Execution under uncertain fill probabilities
+- Adversarial market participants
+- Path-dependent payoff structures
+- Risk-constrained decision-making under uncertainty
+
+## Key Features
+| Feature                           | Description                                                                                             |
+|-----------------------------------|---------------------------------------------------------------------------------------------------------|
+| Monte Carlo Decision Engine       | Evaluates actions by simulating large numbers of stochastic future trajectories under uncertainty.      |
+| Sequential State Simulation       | Models full game lifecycle (preflop → river → terminal state) as a path-dependent decision process.     |
+| Multi-Agent Interaction           | Supports independent agents with stochastic policies and heterogeneous decision strategies.             |
+| Expected Value Evaluation         | Computes action-level EV and outcome distributions to guide optimal decision-making.                    |
+| Risk-Constrained Decision Making  | Incorporates capital dynamics, stack evolution, and risk-of-ruin constraints into action selection.     |
+| Fast C++ Simulation Core          | High-performance engine optimized for large-scale Monte Carlo rollouts.                                 |
+| Bitmask Hand Evaluator            | Efficient 7-card hand evaluation using bitwise operations for scalable simulation.                      |
+| Stochastic Policy Sampling        | Introduces randomized decision policies to model mixed-strategy equilibrium behavior.                   |
+| Board & State Awareness           | Dynamically adapts decisions based on evolving public state and information structure.                  |
+| Python Research Prototype         | Lightweight implementation for validation, visualization, and strategy testing.                         |
+
+### Monte Carlo Decision Framework
+- Large-scale rollout simulation of future trajectories
+- Action evaluation via expected value and outcome distributions
+- Robust under hidden information and stochastic policies
+
+### Multi-Agent Stochastic System
+- Independent agents with heterogeneous strategies
+- Opponent modeling via probabilistic policy sampling
+- Interaction-driven state evolution
+
+### Sequential Decision Process
+- Full hand lifecycle simulation (preflop → river → terminal state)
+- Path-dependent state transitions
+- Dynamic adaptation across decision stages
+
+### Risk-Constrained Decision Making
+- Explicit capital tracking across simulations
+- Risk-of-ruin modeling via stack depletion dynamics
+- All-in / boundary condition handling
+
+### Efficient Game State Engine
+- Optimized C++ simulation core
+- Fast hand evaluation via bitmask-based 7-card evaluator
+- Scalable Monte Carlo execution (10,000+ rollouts per decision)
+
+## System Architecture
+The engine models a full sequential decision pipeline:
+```
+Initialize State
+→ Sample Private Information
+→ Preflop Decision
+→ Flop Decision
+→ Turn Decision
+→ River Decision
+→ Terminal Evaluation
+→ Outcome Recording
+→ Repeat (Monte Carlo Loop)
+```
+
+Each trajectory represents one possible realization of the environment under uncertainty.
+
+## Decision Mechanism
+At each decision node:
+```
+1. Generate legal action set (fold / call / raise)
+
+2. Simulate downstream outcomes for each action
+
+3. Compute:
+- Expected Value (EV)
+- Variance / outcome distribution
+- Risk-adjusted payoff (capital survival weighted)
+
+4. Select action using stochastic policy evaluation
+```
+
+This enables **mixed-strategy behavior rather than deterministic rules**, consistent with equilibrium-style decision-making under uncertainty.
+
+## Multi-Agent Environment
+The system models multiple interacting agents with:
+- Partial observability (hidden cards / information asymmetry)
+- Independent stochastic strategies
+- Position-aware decision structures
+- Adaptive response to prior actions
+
+</br>
+
+This creates a **non-stationary decision environment**, similar in structure to:
+- Limit order book interaction
+- Adversarial execution environments
+- Competitive liquidity provision
+
+## Risk & Capital Dynamics
+The engine explicitly tracks:
+- Stack evolution over time
+- Drawdown and depletion events
+- Bankruptcy (absorbing state conditions)
+
+</br>
+
+This enables:
+- Probability of ruin estimation
+- Survival-weighted EV evaluation
+- Capital-constrained decision optimization
+
+## Implementation
+### C++ Core Engine
+- High-performance Monte Carlo simulation loop
+- Bitmask-based 7-card hand evaluation
+- Optimized random sampling (mt19937)
+- Efficient state transition system
+
+### Python Prototype
+- Research and visualization layer
+- Rapid testing of decision logic
+- Validation of Monte Carlo convergence behavior
+
+## Why Monte Carlo?
+Closed-form evaluation is infeasible due to:
+- Combinatorial explosion of future states
+- Hidden information asymmetry
+- Multi-agent strategy dependence
+- Path-dependent outcomes
+
+</br>
+
+Monte Carlo provides:
+- Scalable approximation of expected value
+- Flexible modeling of complex strategies
+- Robust decision-making under uncertainty
+
+## Key Insight
+The system demonstrates that optimal decisions in uncertain sequential environments depend not on deterministic rules, but on:
+
+**Distributional outcome modeling over future state trajectories**
+<br><br>
+
+This directly parallels quantitative trading problems such as:
+- Execution strategy optimization
+- Market-making under uncertainty
+- Adversarial order flow interaction
+
+## Trading & Systems Mapping
+Although implemented in a poker environment, the underlying decision framework generalizes to financial markets under uncertainty.
+
+| Poker Concept                         | Trading Analogy                                       |
+|---------------------------------------|-------------------------------------------------------|
+| Hole cards (private information)      | Private signal / inventory / alpha signal             |
+| Community cards                       | Public market information (order flow, price action)  |
+| Betting action (fold / call / raise)  | Order decision (pass / trade / size up / aggress)     |
+| Stack size                            | Capital allocation / risk budget                      |
+| Pot size                              | Market opportunity / payoff size                      |
+| Blinds                                | Transaction costs / spread / fees                     |
+| Opponents                             | Other market participants / liquidity providers       |
+| Betting rounds                        | Sequential execution / decision stages                |
+| Showdown                              | Trade resolution / PnL realization                    |
+| Stochastic opponent policies          | Market microstructure uncertainty                     |
+
+
+## Summary
+This project implements a Monte Carlo-based decision system for sequential multi-agent environments, emphasizing:
+- Probabilistic reasoning
+- Risk-aware optimization
+- Stochastic policy evaluation
+- Scalable simulation of uncertain futures
+
+While implemented in a poker environment, the underlying structure generalizes to quantitative trading, execution modeling, and reinforcement learning under uncertainty.
+
+## Example Outputs
+Below are sample outputs illustrating how the Monte Carlo decision engine behaves across different simulation scenarios and state transitions.
+
+### System Initialization
+<img width="724" height="149" alt="initialize_parameters" src="https://github.com/user-attachments/assets/2fa6d3bd-fd47-4c58-9c00-1e6f5fd6ea32" />
+
+</br>
+System initializes game state, player positions, and simulation parameters prior to Monte Carlo rollout execution.
+</br></br>
+
+### Early Termination Event
+<img width="397" height="705" alt="early_termination" src="https://github.com/user-attachments/assets/344ef7ed-33bd-4623-a69f-1e2219a937c7" />
+
+</br>
+Simulation terminates early when a single agent accumulates all available capital, representing an absorbing state in the stochastic process.
+</br></br>
+
+### Full Game Simulation - Single Bankruptcy
+<img width="701" height="929" alt="full_game_simulation_self_bankruptcy" src="https://github.com/user-attachments/assets/d30dc978-faae-4a0c-b2d9-923b89361589" />
+
+</br>
+Example Monte Carlo trajectory showing full sequential decision process and capital depletion dynamics for one agent.
+</br></br>
+
+### Full Game Simulation - Multiple Bankruptcies
+<img width="678" height="952" alt="full_game_simulation_multiple_bankruptcies" src="https://github.com/user-attachments/assets/86924520-803e-4e8d-87b0-a7e23db2d5dc" />
+
+<br>
+Multi-agent simulation illustrating concurrent capital depletion across stochastic trajectories.
+</br></br>
+
+### Python Prototype (Validation Layer)
+Below is a sample output from the Python reference implementation used for rapid prototyping and validation of decision logic.
+
+```python
+--------- GAME 2 ---------
+
+my_player_id 1
+Current Seating: [5, 0, 1, 2, 3, 4]
+
+DEALING CARDS...
+
+PRE-FLOP
+
+Player 3: (SB, early) with 86s -> post SB 10.00
+Player 4: (BB, early) with Q6o -> post BB 20.00
+Player 5: (UTG, early) with AJo -> raise 74.00
+Player 0: (MP, middle) with Q3o -> fold 0.00
+Player 1: (CO, late) with AKo -> call 74.00 (YOU)
+Player 2: (BTN, late) with 53o -> fold 0.00
+Player 3: (SB, early) with 86s -> fold 0.00
+Player 4: (BB, early) with Q6o -> fold 0.00
+
+FLOP
+
+Board - flop: ['7h', '5h', '7s'] 
+
+Player 5: (UTG, early) with AJo -> check 0.00
+Player 1: (CO, late) with AKo -> check 0.00 (YOU)
+
+TURN
+
+Board - turn: ['7h', '5h', '7s', '2d'] 
+
+Player 5: (UTG, early) with AJo -> check 0.00
+Player 1: (CO, late) with AKo -> check 0.00 (YOU)
+
+RIVER
+
+Board - river: ['7h', '5h', '7s', '2d', '7d'] 
+
+Player 5: (UTG, early) with AJo -> check 0.00
+Player 1: (CO, late) with AKo -> check 0.00 (YOU)
+
+SHOWDOWN
+
+Board - river: ['7h', '5h', '7s', '2d', '7d'] 
+
+Player 1: (MP, middle) with AKo -> cards: (Kh, As), hand_type: Three of a Kind, combo: ['7h', '7s', '7d', 'As', 'Kh'] (YOU)
+Player 5: (BB, early) with AJo -> cards: (Ah, Jc), hand_type: Three of a Kind, combo: ['7h', '7s', '7d', 'Ah', 'Jc']
+Player 1: (MP, middle) with AKo -> win_showdown (YOU)
+Player 1: (MP, middle) wins 178.00 from the showdown!
+
+END OF GAME
+Final pot size: 178.00
+
+Updated Stacks and Net Profits:
+Player 0: 1000 (0)
+Player 1: 1104.0 (+104.0)
+Player 2: 1000 (0)
+Player 3: 990 (-10)
+Player 4: 1000.0 (-20.0)
+Player 5: 906.0 (-74.0)
+
+Hand ended showdown.
+
+Rotating seating...
+New Seating: [4, 5, 0, 1, 2, 3]
+
+```
+
+</br></br></br>
+
+
+<details>
+<summary><strong>Detailed Implementation & Usage</strong></summary>
+
 # Monte-Carlo-Decision-Engine
 A high-performance decision engine using Monte Carlo simulation for imperfect-information environments, applied to No-Limit Texas Hold’em Poker (NLHE). The engine evaluates possible actions, simulates outcomes, and determines optimal strategies under uncertainty. Supports multi-agent gameplay, dynamic stack sizes, and stochastic policy evaluation, subject to capital constraints and risk of ruin dynamics.
 
@@ -726,3 +1023,6 @@ Rotating seating...
 New Seating: [4, 5, 0, 1, 2, 3]
 
 ```
+
+</details>
+</br></br>
