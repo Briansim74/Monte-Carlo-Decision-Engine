@@ -40,6 +40,55 @@ This mirrors trading problems such as:
 | Board & State Awareness           | Dynamically adapts decisions based on evolving public state and information structure.                  |
 | Python Research Prototype         | Lightweight implementation for validation, visualization, and strategy testing.                         |
 
+## Key Insights
+### 1. Optimal decisions are distributional, not point estimates
+- Maximizing expected value alone is insufficient under capital constraints.
+- Actions with higher EV can still be suboptimal due to tail risk and risk-of-ruin dynamics.
+- This highlights the importance of evaluating full outcome distributions rather than relying on averages.
+
+### 2. Small probability updates can shift optimal actions non-linearly
+- As beliefs about opponent behavior or hidden states update, optimal decisions can change abruptly rather than smoothly.
+- This reinforces the importance of continuous Bayesian updating in dynamic environments.
+
+### 3. Strategy robustness matters more than precision
+- Highly tuned strategies perform well under specific assumptions but degrade quickly when opponent behavior deviates.
+- Simpler, more robust policies often outperform in uncertain, non-stationary environments.
+
+### 4. Interaction effects dominate isolated decision quality
+- Outcomes depend heavily on how multiple agents adapt to each other.
+- This creates feedback loops similar to competitive market environments, where edge decays as participants react.
+
+## Trading & Systems Mapping
+Although implemented in a poker environment, the underlying decision framework generalizes to financial markets under uncertainty.
+
+| Poker Concept                         | Trading Analogy                                       |
+|---------------------------------------|-------------------------------------------------------|
+| Hole cards (private information)      | Private signal / inventory / alpha signal             |
+| Community cards                       | Public market information (order flow, price action)  |
+| Betting action (fold / call / raise)  | Order decision (pass / trade / size up / aggress)     |
+| Stack size                            | Capital allocation / risk budget                      |
+| Pot size                              | Market opportunity / payoff size                      |
+| Blinds                                | Transaction costs / spread / fees                     |
+| Opponents                             | Other market participants / liquidity providers       |
+| Betting rounds                        | Sequential execution / decision stages                |
+| Showdown                              | Trade resolution / PnL realization                    |
+| Stochastic opponent policies          | Market microstructure uncertainty                     |
+
+## Why Monte Carlo?
+Closed-form evaluation is infeasible due to:
+- Combinatorial explosion of future states
+- Hidden information asymmetry
+- Multi-agent strategy dependence
+- Path-dependent outcomes
+
+</br>
+
+Monte Carlo provides:
+- Scalable approximation of expected value
+- Flexible modeling of complex strategies
+- Robust decision-making under uncertainty
+
+## Core System Components
 ### Monte Carlo Decision Framework
 - Large-scale rollout simulation of future trajectories
 - Action evaluation via expected value and outcome distributions
@@ -137,49 +186,8 @@ This enables:
 - Rapid testing of decision logic
 - Validation of Monte Carlo convergence behavior
 
-## Why Monte Carlo?
-Closed-form evaluation is infeasible due to:
-- Combinatorial explosion of future states
-- Hidden information asymmetry
-- Multi-agent strategy dependence
-- Path-dependent outcomes
 
-</br>
 
-Monte Carlo provides:
-- Scalable approximation of expected value
-- Flexible modeling of complex strategies
-- Robust decision-making under uncertainty
-
-## Key Insights
-
-**1. Queue position is a primary driver of execution quality**<br>
-Fill probability is highly sensitive to queue position, often more than price level itself. Small differences in order timing can significantly impact realized execution.
-
-**2. Liquidity is unstable under high cancellation rates**<br>
-Increased cancellation intensity creates “ghost liquidity,” where displayed depth overstates actual executable volume. This leads to misleading signals if not accounted for.
-
-**3. Order flow imbalance drives short-term price pressure**<br>
-Sustained imbalance between aggressive buy and sell orders leads to directional price movement, even without fundamental changes. This reinforces the importance of flow-based signals.
-
-**4. Execution outcomes are path-dependent**<br>
-Identical strategies can produce different PnL outcomes depending on order arrival sequences, highlighting the importance of modeling temporal dynamics rather than static snapshots.
-
-## Trading & Systems Mapping
-Although implemented in a poker environment, the underlying decision framework generalizes to financial markets under uncertainty.
-
-| Poker Concept                         | Trading Analogy                                       |
-|---------------------------------------|-------------------------------------------------------|
-| Hole cards (private information)      | Private signal / inventory / alpha signal             |
-| Community cards                       | Public market information (order flow, price action)  |
-| Betting action (fold / call / raise)  | Order decision (pass / trade / size up / aggress)     |
-| Stack size                            | Capital allocation / risk budget                      |
-| Pot size                              | Market opportunity / payoff size                      |
-| Blinds                                | Transaction costs / spread / fees                     |
-| Opponents                             | Other market participants / liquidity providers       |
-| Betting rounds                        | Sequential execution / decision stages                |
-| Showdown                              | Trade resolution / PnL realization                    |
-| Stochastic opponent policies          | Market microstructure uncertainty                     |
 
 
 ## Summary
