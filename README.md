@@ -151,16 +151,19 @@ Monte Carlo provides:
 - Flexible modeling of complex strategies
 - Robust decision-making under uncertainty
 
-## Key Insight
-The system demonstrates that optimal decisions in uncertain sequential environments depend not on deterministic rules, but on:
+## Key Insights
 
-**Distributional outcome modeling over future state trajectories**
-<br><br>
+**1. Queue position is a primary driver of execution quality**<br>
+Fill probability is highly sensitive to queue position, often more than price level itself. Small differences in order timing can significantly impact realized execution.
 
-This directly parallels quantitative trading problems such as:
-- Execution strategy optimization
-- Market-making under uncertainty
-- Adversarial order flow interaction
+**2. Liquidity is unstable under high cancellation rates**<br>
+Increased cancellation intensity creates “ghost liquidity,” where displayed depth overstates actual executable volume. This leads to misleading signals if not accounted for.
+
+**3. Order flow imbalance drives short-term price pressure**<br>
+Sustained imbalance between aggressive buy and sell orders leads to directional price movement, even without fundamental changes. This reinforces the importance of flow-based signals.
+
+**4. Execution outcomes are path-dependent**<br>
+Identical strategies can produce different PnL outcomes depending on order arrival sequences, highlighting the importance of modeling temporal dynamics rather than static snapshots.
 
 ## Trading & Systems Mapping
 Although implemented in a poker environment, the underlying decision framework generalizes to financial markets under uncertainty.
