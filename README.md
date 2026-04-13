@@ -1,4 +1,87 @@
 # Monte Carlo Decision Engine (Imperfect Information Systems)
+A Monte Carlo-based framework for sequential decision-making under uncertainty in multi-agent, partially observable environments.
+
+Implemented in C++ with a Python research layer.
+
+<br>
+
+Primary environment:
+
+No-Limit Texas Hold’em Poker as a structured proxy for adversarial decision-making under uncertainty.
+
+## Core Idea
+At each decision point, actions are evaluated by simulating full outcome distributions rather than relying on point estimates.
+
+The system selects actions based on:
+
+        Expected value + distribution shape + downside risk under uncertainty
+
+## Why this matters
+This mirrors trading environments where:
+- Outcomes are probabilistic (fills, slippage, execution)
+- Participants are adversarial (other liquidity takers/providers)
+- Information is incomplete
+- Risk constraints dominate theoretical optimality
+
+## Decision Framework
+For each action:
+- Monte Carlo simulation of future trajectories (10,000+ rollouts)
+- Stochastic opponent policy sampling (mixed strategies)
+- Propagation of uncertainty through sequential states
+- Evaluation of full outcome distributions (EV, variance, tail risk)
+- Risk-adjusted action selection
+
+## Key Insights
+- EV alone is insufficient under constraints
+- Optimal decisions are highly sensitive to belief updates
+- Tail outcomes dominate under capital/risk limits
+- Robustness > theoretical optimality in non-stationary systems
+
+## Trading Mapping
+| Poker                     | Trading                         |
+|---------------------------|---------------------------------|
+| Private cards             | Alpha / hidden signal           |
+| Board cards               | Public market information       |
+| Betting rounds            | Execution sequence              |
+| Stack                     | Risk capital                    |
+| Opponents                 | Other market participants       |
+| Pot	                    | Payoff / opportunity            |
+| Fold / raise              | Trade / size / pass             |
+
+## System Notes
+- C++ Monte Carlo engine (10k+ rollouts per decision)
+- Bitmask-based hand evaluation
+- Stochastic policy sampling
+- Sequential state simulation (full hand lifecycle)
+- Python layer for analysis and validation
+
+## Core Insight
+In uncertain environments, robustness of a decision matters more than its expected value.
+
+## Example Outputs
+Below are sample outputs illustrating how the Monte Carlo decision engine behaves across different simulation scenarios and state transitions.
+
+### Early Termination Event
+<img width="397" height="705" alt="early_termination" src="https://github.com/user-attachments/assets/344ef7ed-33bd-4623-a69f-1e2219a937c7" />
+
+</br>
+Simulation terminates early when a single agent accumulates all available capital, representing an absorbing state in the stochastic process.
+</br></br>
+
+### Full Game Simulation - Single Bankruptcy
+<img width="701" height="929" alt="full_game_simulation_self_bankruptcy" src="https://github.com/user-attachments/assets/d30dc978-faae-4a0c-b2d9-923b89361589" />
+
+</br>
+Example Monte Carlo trajectory showing full sequential decision process and capital depletion dynamics for one agent.
+</br></br>
+
+</br></br></br></br>
+
+
+<details>
+<summary><strong>Detailed Implementation & Usage</strong></summary>
+
+# Monte Carlo Decision Engine (Imperfect Information Systems)
 
 A high-performance C++ Monte Carlo decision engine for sequential decision-making under uncertainty. The system evaluates optimal actions by simulating large-scale stochastic outcomes in imperfect-information environments.
 
@@ -25,7 +108,11 @@ This mirrors trading problems such as:
 - Adversarial market participants
 - Path-dependent payoff structures
 - Risk-constrained decision-making under uncertainty
-
+## Key Features
+| Feature                           | Description                                                                                             |
+|-----------------------------------|---------------------------------------------------------------------------------------------------------|
+| Monte Carlo Decision Engine       | Evaluates actions by simulating large numbers of stochastic future trajectories under uncertainty.      |
+| Sequential State Simulation       | Models full game lifecycle (preflop → river → terminal state) as a path-dependent decision process.     |
 ## Key Features
 | Feature                           | Description                                                                                             |
 |-----------------------------------|---------------------------------------------------------------------------------------------------------|
@@ -1034,6 +1121,9 @@ Rotating seating...
 New Seating: [4, 5, 0, 1, 2, 3]
 
 ```
+
+</details>
+</br></br>
 
 </details>
 </br></br>
