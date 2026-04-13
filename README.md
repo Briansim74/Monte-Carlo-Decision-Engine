@@ -1,4 +1,4 @@
-# Monte Carlo Decision Engine (Imperfect Information Systems)
+# Monte Carlo Decision Engine (Adversarial Sequential Decision Simulator)
 A Monte Carlo-based framework for sequential decision-making under uncertainty in multi-agent, partially observable environments.
 
 Implemented in C++ with a Python research layer.
