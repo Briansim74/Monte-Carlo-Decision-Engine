@@ -1,62 +1,96 @@
-# Monte Carlo Decision Engine - Adversarial Sequential Decision Simulator
-A Monte Carlo-based framework for sequential decision-making under uncertainty in multi-agent, partially observable environments.
+# Monte Carlo Decision Engine - Adversarial Sequential Decision Simulator (C++ / Python)
+A high-performance Monte Carlo framework for sequential decision-making under uncertainty in adversarial, partially observable environments.
 
-Implemented in C++ with a Python research layer.
+Built to evaluate decisions by simulating future outcomes rather than relying on static estimates.
 
 <br>
 
-Primary environment:
-
+### Primary environment:
 No-Limit Texas Hold’em Poker as a structured proxy for adversarial decision-making under uncertainty.
 
 ## Core Idea
-At each decision point, actions are evaluated by simulating full outcome distributions rather than relying on point estimates.
+At each decision point, actions are evaluated by simulating possible future trajectories under uncertainty, and selecting based on:
+- Expected outcome
+- Distribution of outcomes
+- Downside / tail risk
 
-The system selects actions based on:
+This enables risk-aware decision-making under incomplete information.
 
-        Expected value + distribution shape + downside risk under uncertainty
-
-## Why this matters
-This mirrors trading environments where:
-- Outcomes are probabilistic (fills, slippage, execution)
-- Participants are adversarial (other liquidity takers/providers)
-- Information is incomplete
-- Risk constraints dominate theoretical optimality
+## Why this matters (Trading perspective)
+This structure mirrors core problems in trading:
+- Uncertain execution outcomes (fills, slippage, latency)
+- Adversarial participants reacting to decisions
+- Path-dependent PnL evolution
+- Risk constraints affecting optimal decisions
 
 ## Decision Framework
 For each action:
-- Monte Carlo simulation of future trajectories (10,000+ rollouts)
-- Stochastic opponent policy sampling (mixed strategies)
-- Propagation of uncertainty through sequential states
-- Evaluation of full outcome distributions (EV, variance, tail risk)
+- Monte Carlo simulation of future state trajectories
+- Stochastic opponent / environment modeling
+- Propagation of uncertainty through sequential decisions
+- Full outcome distribution evaluation (EV, variance, tail risk)
 - Risk-adjusted action selection
 
 ## Key Insights
-- EV alone is insufficient under constraints
-- Optimal decisions are highly sensitive to belief updates
-- Tail outcomes dominate under capital/risk limits
-- Robustness > theoretical optimality in non-stationary systems
+### 1. Decisions are distributional, not point estimates
+Expected value alone is insufficient under uncertainty and risk constraints.
 
-## Trading Mapping
-| Poker                     | Trading                         |
-|---------------------------|---------------------------------|
-| Private cards             | Alpha / hidden signal           |
-| Board cards               | Public market information       |
-| Betting rounds            | Execution sequence              |
-| Stack                     | Risk capital                    |
-| Opponents                 | Other market participants       |
-| Pot	                    | Payoff / opportunity            |
-| Fold / raise              | Trade / size / pass             |
+### 2. Small belief updates change optimal actions
+Optimal decisions can shift sharply as new information arrives.
 
-## System Notes
-- C++ Monte Carlo engine (10k+ rollouts per decision)
-- Bitmask-based hand evaluation
-- Stochastic policy sampling
-- Sequential state simulation (full hand lifecycle)
-- Python layer for analysis and validation
+### 3. Robustness matters more than precision
+Strategies that overfit assumptions degrade quickly in non-stationary environments.
+
+### 4. Interaction effects dominate outcomes
+Multi-agent feedback loops significantly affect realized results.
+
+## Trading Interpretation
+Although implemented in a structured environment, the framework maps directly to:
+- Execution under uncertain fill probability
+- Adversarial market participation
+- Risk-constrained position sizing
+- Sequential decision-making in dynamic markets
+
+## Why Monte Carlo?
+Closed-form solutions are infeasible due to:
+- Combinatorial state explosion
+- Hidden information
+- Multi-agent interactions
+- Path-dependent outcomes
+
+Monte Carlo enables scalable approximation of:
+- Expected outcomes
+- Risk distributions
+- Decision robustness under uncertainty
+
+## System Components
+### Monte Carlo Simulation Engine
+- Large-scale rollout of future trajectories (10,000+ simulations per decision)
+- Action-level outcome evaluation
+- Distribution-aware decision scoring
+### Sequential State Modeling
+- Full environment lifecycle simulation
+- Path-dependent state transitions
+- Multi-step decision propagation
+### Multi-Agent Stochastic System
+- Independent agents with probabilistic policies
+- Interaction-driven environment evolution
+- Non-stationary dynamics across time
+### Risk-Constrained Decision Layer
+- Capital / stack tracking across trajectories
+- Drawdown and depletion modeling
+- Survival-weighted decision evaluation
+### C++ Simulation Core
+- High-performance Monte Carlo engine
+- Bitmask-based state evaluation
+- Optimized stochastic sampling (mt19937)
+### Python Research Layer
+- Strategy validation and analysis
+- Visualization of outcome distributions
+- Prototype testing environment
 
 ## Core Insight
-In uncertain environments, robustness of a decision matters more than its expected value.
+In uncertain, multi-agent systems, decision quality depends more on outcome distribution and robustness than on point estimates.
 
 ## Example Outputs
 Below are sample outputs illustrating how the Monte Carlo decision engine behaves across different simulation scenarios and state transitions.
