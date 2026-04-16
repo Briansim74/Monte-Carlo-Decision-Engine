@@ -1,28 +1,32 @@
 # Monte Carlo Decision Engine - Adversarial Sequential Decision Simulator (C++ / Python)
+Designed for evaluating decision robustness under stochastic feedback environments.
 
 ## Trading Problem
-Trading decisions are sequential, probabilistic, and adversarial. Outcomes depend on future uncertainty, not just current estimates.
+Trading decisions are made under uncertainty, where outcomes depend on future stochastic states and adversarial behavior.
 
-This project simulates that environment (No-Limit Texas Hold’em Poker) to study how optimal decisions change when evaluated over full outcome distributions rather than point estimates.
+This project simulates that environment (No-Limit Texas Hold’em Poker).
 
 ## Core Idea
-Each decision is evaluated by simulating possible future trajectories under uncertainty and selecting actions based on:
+Actions are evaluated by simulating forward outcome distributions and selecting based on risk-adjusted expected value rather than point estimates.
+
+## Decision Logic
+Each decision is scored using:
 - Expected value (EV)
-- Full outcome distribution
-- Tail risk / downside exposure
+- Outcome distribution (risk / downside exposure)
+- Sensitivity to stochastic state changes
 
 ## Trading Mapping
-This structure directly mirrors:
-- Execution under uncertain fill probability
-- Adversarial market participants reacting to decisions
-- Sequential position sizing under risk constraints
+This models core prop trading dynamics:
+- Sequential position sizing under uncertainty
+- Adversarial market participant behavior
 - Path-dependent PnL evolution
+- Risk-adjusted decisioning under incomplete information
 
 ## Key Insights
-- EV alone is insufficient under uncertainty
-- Optimal decisions are distribution-sensitive, not point-estimate driven
-- Small belief updates can significantly change optimal actions
-- Multi-agent interaction dominates realized outcomes
+- Decision quality depends on outcome distribution, not just EV
+- Risk-adjusted evaluation improves robustness under uncertainty
+- Sequential dependency amplifies exposure to state uncertainty
+- Optimal actions are sensitive to changes in underlying assumptions
 
 ## Why Monte Carlo?
 Closed-form solutions are infeasible due to:
@@ -43,7 +47,7 @@ Monte Carlo enables scalable approximation of:
 - Risk-weighted decision selection (drawdown-aware)
 
 ## Core Takeaway
-In trading-like environments, decision quality is defined by outcome distribution and robustness - not expected value.
+Trading decisions are evaluated through simulated outcome distributions and risk-adjusted expected value under stochastic and adversarial conditions.
 
 ## Example Outputs
 Below are sample outputs illustrating how the Monte Carlo decision engine behaves across different simulation scenarios and state transitions.
